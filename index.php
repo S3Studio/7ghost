@@ -7,6 +7,7 @@
 	//当前根url
 	$rootUrl = 'http://'.$_SERVER['HTTP_HOST'].siteUri();
 	$snoopy = new Snoopy();
+	$snoopy->maxredirs = 0;
 	$uri = substr($_SERVER['REQUEST_URI'],strlen(siteUri()));
 	//匹配自定义页面，合并参数
 	foreach($config['pages'] as $page){
@@ -112,7 +113,15 @@
 		default:
 			break;
 	}
-	$contentType = send_header($snoopy->headers);
+	
+	//替换header中的域名
+	$replaced_header = $snoopy->headers;
+	foreach($replaced_header as &$eachheader){
+		$eachheader = str_replace($config['host'],$rootUrl,$eachheader);
+	}
+	unset($eachheader);
+	
+	$contentType = send_header($replaced_header);
 	$charset = empty($contentType[1])?'utf-8':$contentType[1];
 	$charset = trim($charset,"\n\r");
 	
