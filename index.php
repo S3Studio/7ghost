@@ -4,6 +4,13 @@
 	//读取配置信息
 	$config  = d('config')->get();
 	
+	//判断是否登录
+	session_start();
+	if($config['alwaysPwd'] && empty($_SESSION['7g_edaa10f6_logined'])){
+		header("Location:./_admin/pwd.php");
+		exit();
+	}
+	
 	//当前根url
 	$rootUrl = 'http://'.$_SERVER['HTTP_HOST'].siteUri();
 	$snoopy = new Snoopy();

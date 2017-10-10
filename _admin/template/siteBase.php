@@ -29,6 +29,12 @@
 					->set('options',array('替换'=>'0','不替换'=>'1'))
 					->set('tipe','替换相对地址，可以让在二级目录的7ghost正常运行，影响样式文件中的图片')
 					->e();
+			w('select')->set('name','全站需要密码')
+					->set('key','alwaysPwd')
+					->set('value',d('config')->get('alwaysPwd'))
+					->set('options',array('不需要'=>'0','需要'=>'1'))
+					->set('tipe','需要先输入密码才能访问反向代理网站')
+					->e();
 		?>
 		<br>
 		<h2 class="section-header">静态页面缓存</h2>

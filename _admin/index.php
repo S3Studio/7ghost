@@ -12,7 +12,7 @@
 	}
 	session_start();
 	//ÅÐ¶ÏÊÇ·ñµÇÂ¼
-	if(empty($_SESSION['logined'])){
+	if(empty($_SESSION['7g_edaa10f6_logined'])){
 		include ('./module/index.php');
 		$m = new index();
 		$m->actionLogin();
