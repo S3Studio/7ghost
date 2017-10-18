@@ -9,7 +9,7 @@ class index{
 	function actionLogin(){
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 			if(d('config')->get('password')==$_POST['password']){
-				$_SESSION['7g_edaa10f6_logined']=true;
+				$_SESSION['logined']=true;
 				if($_GET['fwd']=='1'){
 					header("Location:..");
 				}else{
@@ -23,7 +23,7 @@ class index{
 	}
 	
 	function actionLogout(){
-		unset($_SESSION['7g_edaa10f6_logined']);
+		unset($_SESSION['logined']);
 		header("Location:./");
 		exit();
 	}
