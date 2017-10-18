@@ -143,8 +143,8 @@
 	//替换相对地址relativeHTML
 	if(empty($config['replaceDomain'])){
 		if(in_array($thisExt,array('','php','html'))){
-			$snoopy->results = str_replace('="/','="'.siteUri(),$snoopy->results);
-			$snoopy->results = str_replace('=\'/','=\''.siteUri(),$snoopy->results);
+			$snoopy->results = preg_replace('/="\/?!\//','="'.siteUri(),$snoopy->results);
+			$snoopy->results = preg_replace('/=\'\/?!\//','=\''.siteUri(),$snoopy->results);
 			$snoopy->results = preg_replace('/<base href=.*?\/>/','',$snoopy->results);
 		}
 	}
@@ -152,7 +152,7 @@
 	//替换CSS相对地址
 	if(empty($config['relativeCSS'])){
 		if(in_array($thisExt,array('css'))){
-			$snoopy->results = str_replace('url("/','url("'.siteUri(),$snoopy->results);
+			$snoopy->results = preg_replace('/url\("\/?!\//','url("'.siteUri(),$snoopy->results);
 		}
 	}
 	
