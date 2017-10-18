@@ -10,7 +10,11 @@ class index{
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 			if(d('config')->get('password')==$_POST['password']){
 				$_SESSION['7g_edaa10f6_logined']=true;
-				header("Location:./?m=site&a=index");
+				if($_GET['fwd']=='1'){
+					header("Location:..");
+				}else{
+					header("Location:./?m=site&a=index");
+				}
 				exit();
 			}
 			echo "ÃÜÂë´íÎó";

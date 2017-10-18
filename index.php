@@ -7,7 +7,7 @@
 	//ÅÐ¶ÏÊÇ·ñµÇÂ¼
 	session_start();
 	if($config['alwaysPwd'] && empty($_SESSION['7g_edaa10f6_logined'])){
-		header("Location:./_admin/pwd.php");
+		header("Location:./_admin/?fwd=1");
 		exit();
 	}
 	
