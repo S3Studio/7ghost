@@ -52,7 +52,7 @@ function v($str){
 
 function siteUri(){
 	$sitefolder=explode('.php', $_SERVER['PHP_SELF']);
-	return trim(dirname($sitefolder[0]),DIRECTORY_SEPARATOR).'/';
+	return '/'.trim(dirname($sitefolder[0]),'/').'/';
 }
 	
 function send_header($headers,$cookies=1){
