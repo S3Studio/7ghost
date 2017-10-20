@@ -30,8 +30,8 @@
 	//当前请求的文件后缀
 	$thisExt = pathinfo($_SERVER['PATH_INFO'],PATHINFO_EXTENSION);
 	//静态文件
-	if(in_array($thisExt,explode("|",$config['diyStatic']))){
-		$filename = dirname(ADIR).'/'.substr($_SERVER['REDIRECT_URL'],strlen(siteUri()));
+	if($config['static'] == 0 && in_array($thisExt,explode("|",$config['diyStatic']))){
+		$filename = dirname(ADIR).$_SERVER['PATH_INFO'];
 		//如果存在，直接输出
 		if(is_file($filename)){
 			echo file_get_contents($filename);
@@ -164,8 +164,8 @@
 		exit();
 	}
 	//静态文件
-	if(in_array($thisExt,explode("|",$config['diyStatic']))){
-		$filename = dirname(ADIR).'/'.substr($_SERVER['REDIRECT_URL'],strlen(siteUri()));
+	if($config['static'] == 0 && in_array($thisExt,explode("|",$config['diyStatic']))){
+		$filename = dirname(ADIR).$_SERVER['PATH_INFO'];
 		save_file($filename,$snoopy->results);
 	}
 	

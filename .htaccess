@@ -1,7 +1,4 @@
 RewriteEngine on
-RewriteBase /
-RewriteCond $1 ^(index\.php)?$ [OR]
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^(.*)$ - [S=1]
-RewriteRule . /index.php [L]
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1

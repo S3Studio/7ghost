@@ -165,7 +165,11 @@ function save_file($filename,$data){
 	if(in_array($pathinfo['basename'],array('.htaccess'))||$pathinfo['extension']=='php'){
 		return false;
 	}
-	mdir2(dirname($filename));
-	file_put_contents($filename, $data);
+	try{
+		@mdir2(dirname($filename));
+		@file_put_contents($filename, $data);
+	}catch(Exception $e){
+		
+	}
 }	
 ?>
