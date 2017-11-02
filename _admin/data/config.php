@@ -4,6 +4,7 @@
   'replaceDomain' => '0',
   'relativeHTML' => '0',
   'relativeCSS' => '0',
+  'alwaysPwd' => '0',
   'static' => '0',
   'diyStatic' => 'css|js|html|png|jpg',
   'cookies' => '0',

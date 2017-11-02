@@ -26,6 +26,7 @@ class site{
 		d('config')->set('replaceDomain',$_POST['replaceDomain']);
 		d('config')->set('relativeHTML',$_POST['relativeHTML']);
 		d('config')->set('relativeCSS',$_POST['relativeCSS']);
+		d('config')->set('alwaysPwd',$_POST['alwaysPwd']);
 		d('config')->set('static',$_POST['static']);
 		d('config')->set('diyStatic',$_POST['diyStatic']);
 	}
