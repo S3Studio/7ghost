@@ -12,7 +12,7 @@
 	}
 	
 	//当前根url
-	$rootUrl = 'http://'.$_SERVER['HTTP_HOST'].siteUri();
+	$rootUrl = $_SERVER['HTTP_HOST'].siteUri();
 	$snoopy = new Snoopy();
 	$snoopy->maxredirs = 0;
 	$uri = substr($_SERVER['REQUEST_URI'],strlen(siteUri()));
@@ -32,8 +32,32 @@
 			break;
 		}
 	}
+	
+	//判断如何处理HTTPS
+	if(empty($config['sslMode'])){
+		$SSL_PREFIX = '';
+		$SSL_PROTOCAL = 'https://';
+		$isSSL = !empty($_SERVER['HTTPS']);
+	}else{
+		$SSL_PREFIX = '7gssl/';
+		$SSL_PROTOCAL = 'http://';
+		$isSSL = str_starts_with($uri,$SSL_PREFIX);
+	}
+	
 	//获取要请求的url
-	$url = $config['host'].$uri;
+	$raw_host = $config['host'];
+	if(str_starts_with($raw_host,'http://')){
+		$raw_host = substr($raw_host,strlen('http://'));
+	}
+	if(str_starts_with($raw_host,'https://')){
+		$raw_host = substr($raw_host,strlen('https://'));
+	}
+	if($isSSL){
+		$url = 'https://'.$raw_host.substr($uri,strlen($SSL_PREFIX));
+	}else{
+		$url = 'http://'.$raw_host.$uri;
+	}
+	
 	//当前请求的文件后缀
 	$thisExt = pathinfo($_SERVER['PATH_INFO'],PATHINFO_EXTENSION);
 	//静态文件
@@ -78,7 +102,8 @@
 			$snoopy->referer = $config['diyReferer'];;
 			break;
 		default://自动伪造
-			$snoopy->referer = str_replace($rootUrl,$config['host'],$_SERVER['HTTP_REFERER']);
+			$snoopy->referer = str_replace('http://'.$rootUrl,'http://'.$raw_host,$_SERVER['HTTP_REFERER']);
+			$snoopy->referer = str_replace('https://'.$rootUrl,'https://'.$raw_host,$_SERVER['HTTP_REFERER']);
 			if($snoopy->referer==$_SERVER['HTTP_REFERER'])
 			$snoopy->referer = '';
 			break;
@@ -122,11 +147,14 @@
 	}
 	
 	//替换header中的域名
-	$replaced_header = $snoopy->headers;
-	foreach($replaced_header as &$eachheader){
-		$eachheader = str_replace($config['host'],$rootUrl,$eachheader);
+	if(empty($config['replaceDomain'])){
+		$replaced_header = $snoopy->headers;
+		foreach($replaced_header as &$eachheader){
+			$eachheader = str_replace('http://'.$raw_host,'http://'.$rootUrl,$eachheader);
+			$eachheader = str_replace('https://'.$raw_host,$SSL_PROTOCAL.$rootUrl.$SSL_PREFIX,$eachheader);
+		}
+		unset($eachheader);
 	}
-	unset($eachheader);
 	
 	$contentType = send_header($replaced_header);
 	$charset = empty($contentType[1])?'utf-8':$contentType[1];
@@ -136,23 +164,37 @@
 	if(empty($config['replaceDomain'])){
 		if(in_array($thisExt,array('','php','html'))){
 			//替换域名
-			$snoopy->results = str_replace($config['host'],$rootUrl,$snoopy->results);
+			$snoopy->results = str_replace('http://'.$raw_host,'http://'.$rootUrl,$snoopy->results);
+			$snoopy->results = str_replace('https://'.$raw_host,$SSL_PROTOCAL.$rootUrl.$SSL_PREFIX,$snoopy->results);
 		}
 	}
 	
 	//替换相对地址relativeHTML
 	if(empty($config['replaceDomain'])){
 		if(in_array($thisExt,array('','php','html'))){
-			$snoopy->results = preg_replace('/="\/(?!\/)/','="'.siteUri(),$snoopy->results);
-			$snoopy->results = preg_replace('/=\'\/(?!\/)/','=\''.siteUri(),$snoopy->results);
+			if($isSSL){
+				$snoopy->results = preg_replace('/="\/(?!\/)/','="'.siteUri().$SSL_PREFIX,$snoopy->results);
+				$snoopy->results = preg_replace('/=\'\/(?!\/)/','=\''.siteUri().$SSL_PREFIX,$snoopy->results);
+			}else{
+				$snoopy->results = preg_replace('/="\/(?!\/)/','="'.siteUri(),$snoopy->results);
+				$snoopy->results = preg_replace('/=\'\/(?!\/)/','=\''.siteUri(),$snoopy->results);
+			}
+			//还不确定如何进行SSL转换
 			$snoopy->results = preg_replace('/<base href=.*?\/>/','',$snoopy->results);
+			$snoopy->results = preg_replace('/<base href=.*?>.*<\/base>/','',$snoopy->results);
 		}
 	}
 	
 	//替换CSS相对地址
 	if(empty($config['relativeCSS'])){
 		if(in_array($thisExt,array('css'))){
-			$snoopy->results = preg_replace('/url\("\/(?!\/)/','url("'.siteUri(),$snoopy->results);
+			if($isSSL){
+				$snoopy->results = preg_replace('/url\("\/(?!\/)/','url("'.siteUri().$SSL_PREFIX,$snoopy->results);
+				$snoopy->results = preg_replace('/url\(\/(?!\/)/','url('.siteUri().$SSL_PREFIX,$snoopy->results);
+			}else{
+				$snoopy->results = preg_replace('/url\("\/(?!\/)/','url("'.siteUri(),$snoopy->results);
+				$snoopy->results = preg_replace('/url\(\/(?!\/)/','url('.siteUri(),$snoopy->results);
+			}
 		}
 	}
 	

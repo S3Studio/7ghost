@@ -9,14 +9,19 @@
 					->set('value',d('config')->get('host'))
 					->set('tipe','整站需要反向代理的网址，如:http://www.baidu.com/')
 					->e();
-
-			w('select')->set('name','替换域名')
+			
+			w('select')->set('name','HTTPS模式')
+					->set('key','sslMode')
+					->set('value',d('config')->get('sslMode'))
+					->set('options',array('直接替换'=>'0','转为HTTP'=>'1'))
+					->set('tipe','替换域名、HTML、CSS相对地址时，如何处理HTTPS链接。<br>“直接替换”只替换域名，不更改协议；“转为HTTP”会同时修改协议，!!存在安全风险!!')
+					->e();
+					w('select')->set('name','替换域名')
 					->set('key','replaceDomain')
 					->set('value',d('config')->get('replaceDomain'))
 					->set('options',array('替换'=>'0','不替换'=>'1'))
 					->set('tipe','替换域名，实现全站镜像')
 					->e();
-			
 			w('select')->set('name','替换HTML相对地址')
 					->set('key','relativeHTML')
 					->set('value',d('config')->get('relativeHTML'))

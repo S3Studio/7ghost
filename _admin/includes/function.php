@@ -172,4 +172,15 @@ function save_file($filename,$data){
 		
 	}
 }	
+
+/**
+ * 判断haystack是否以needle开头
+ */
+function str_starts_with($haystack, $needle) {
+	if(strlen($haystack) == 0 || strlen($needle) == 0){
+		return false;
+	}else{
+		return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
+	}
+}
 ?>
